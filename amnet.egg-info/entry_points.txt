@@ -1,0 +1,6 @@
+[console_scripts]
+amnet-evaluate = amnet.scripts.evaluate:main
+amnet-predict = amnet.scripts.predict:main
+amnet-prepare-data = amnet.scripts.prepare_data:main
+amnet-train = amnet.scripts.train:main
+

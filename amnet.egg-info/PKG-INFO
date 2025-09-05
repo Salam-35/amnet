@@ -1,0 +1,38 @@
+Metadata-Version: 2.1
+Name: amnet
+Version: 0.1.0
+Summary: Anatomically-aware Multi-scale Network for Abdominal Organ Segmentation
+Home-page: https://github.com/amnet-research/amnet
+Author: AMNet Development Team
+Author-email: contact@amnet-research.org
+License: MIT
+Project-URL: Documentation, https://amnet.readthedocs.io
+Project-URL: Bug Reports, https://github.com/amnet-research/amnet/issues
+Project-URL: Source, https://github.com/amnet-research/amnet
+Project-URL: Changelog, https://github.com/amnet-research/amnet/blob/main/CHANGELOG.md
+Description: UNKNOWN
+Keywords: medical imaging segmentation deep learning pytorch abdominal organs CT segmentation computer vision healthcare AI medical AI
+Platform: any
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Science/Research
+Classifier: Intended Audience :: Healthcare Industry
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Scientific/Engineering :: Medical Science Apps.
+Classifier: Topic :: Scientific/Engineering :: Image Processing
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Provides-Extra: wandb
+Provides-Extra: tensorboard
+Provides-Extra: visualization
+Provides-Extra: onnx
+Provides-Extra: multiprocessing
+Provides-Extra: cloud
+Provides-Extra: dev
+Provides-Extra: all

@@ -1,0 +1,54 @@
+# AMNet Project Structure
+
+## Files to copy content to:
+
+- `amnet/__init__.py`
+- `amnet/data/__init__.py`
+- `amnet/data/dataloader.py`
+- `amnet/data/dataset.py`
+- `amnet/data/preprocessing.py`
+- `amnet/data/transforms.py`
+- `amnet/evaluation/__init__.py`
+- `amnet/evaluation/clinical_analysis.py`
+- `amnet/evaluation/evaluator.py`
+- `amnet/evaluation/visualizer.py`
+- `amnet/inference/__init__.py`
+- `amnet/inference/postprocessing.py`
+- `amnet/inference/predictor.py`
+- `amnet/losses/__init__.py`
+- `amnet/losses/boundary.py`
+- `amnet/losses/compound.py`
+- `amnet/losses/constraint.py`
+- `amnet/losses/dice.py`
+- `amnet/losses/focal.py`
+- `amnet/metrics/__init__.py`
+- `amnet/metrics/clinical.py`
+- `amnet/metrics/segmentation.py`
+- `amnet/metrics/surface.py`
+- `amnet/models/__init__.py`
+- `amnet/models/amnet.py`
+- `amnet/models/attention.py`
+- `amnet/models/constraints.py`
+- `amnet/models/decoder.py`
+- `amnet/models/encoders.py`
+- `amnet/training/__init__.py`
+- `amnet/training/callbacks.py`
+- `amnet/training/scheduler.py`
+- `amnet/training/trainer.py`
+- `amnet/utils/__init__.py`
+- `amnet/utils/checkpoints.py`
+- `amnet/utils/io.py`
+- `amnet/utils/logging.py`
+- `amnet/utils/profiling.py`
+- `amnet/utils/visualization.py`
+- `config.py`
+- `scripts/evaluate.py`
+- `scripts/predict.py`
+- `scripts/prepare_data.py`
+- `scripts/train.py`
+- `setup.py`
+- `tests/__init__.py`
+- `tests/test_data.py`
+- `tests/test_losses.py`
+- `tests/test_metrics.py`
+- `tests/test_models.py`

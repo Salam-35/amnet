@@ -1,0 +1,161 @@
+# AMNet Default Configuration
+# Professional configuration for abdominal organ segmentation
+
+# Model Architecture
+model:
+  name: "AMNet"
+  num_classes: 16
+  input_size: [128, 192, 192]  # D, H, W
+
+  # 2D Branch Configuration
+  encoder_2d:
+    name: "convnext_v2_base"
+    feature_dim: 1024
+    depths: [3, 3, 27, 3]
+
+  # 3D Branch Configuration
+  encoder_3d:
+    name: "resnet3d_50"
+    feature_dim: 2048
+    layers: [3, 4, 6, 3]
+
+  # Fusion Configuration
+  fusion_dim: 512
+  scales: [1, 2, 4, 8]
+
+  # Attention Configuration
+  attention_heads: 8
+  attention_dropout: 0.1
+
+# Training Configuration
+training:
+  batch_size: 4
+  learning_rate: 0.0001
+  weight_decay: 0.00001
+  max_epochs: 1000
+  early_stopping: 50
+
+  # Optimizer
+  optimizer: "AdamW"
+  betas: [0.9, 0.999]
+
+  # Scheduler
+  scheduler: "CosineAnnealingLR"
+  eta_min: 0.0000001
+
+# Loss Function Weights
+loss:
+  alpha_dice: 1.0      # Dice loss weight
+  beta_focal: 0.5      # Focal loss weight
+  gamma_boundary: 0.3  # Boundary loss weight
+  delta_constraint: 0.2 # Anatomical constraint weight
+
+  # Focal loss parameters
+  focal_alpha: 1.0
+  focal_gamma: 2.0
+
+# Data Configuration
+data:
+  root_dir: "/data/AMOS22"
+  num_workers: 8
+  pin_memory: true
+  cache_data: true
+
+  # Data splits
+  train_ratio: 0.7
+  val_ratio: 0.15
+  test_ratio: 0.15
+
+  # Preprocessing
+  window_level: 40.0
+  window_width: 400.0
+  target_spacing: [1.5, 1.0, 1.0]
+
+# Data Augmentation
+augmentation:
+  probability: 0.8
+
+  # Geometric transformations
+  rotation_range: [-10, 10]  # degrees
+  scaling_range: [0.9, 1.1]
+  flip_probability: 0.5
+
+  # Intensity transformations
+  noise_std: 0.1
+  brightness_range: [-0.1, 0.1]
+  contrast_range: [0.8, 1.2]
+
+  # Advanced augmentations
+  elastic_alpha: 1.0
+  elastic_sigma: 50.0
+  elastic_probability: 0.3
+
+  blur_sigma_range: [0.5, 2.0]
+  blur_probability: 0.3
+
+# Paths Configuration
+paths:
+  output_dir: "./outputs"
+  checkpoint_dir: "./outputs/checkpoints"
+  log_dir: "./outputs/logs"
+  predictions_dir: "./outputs/predictions"
+  visualizations_dir: "./outputs/visualizations"
+
+# Logging Configuration
+logging:
+  level: "INFO"
+  log_interval: 10
+  val_interval: 50
+  save_checkpoint_interval: 100
+  visualize_predictions: true
+
+  # Wandb configuration
+  use_wandb: true
+  wandb_project: "AMNet-AbdominalSegmentation"
+  wandb_entity: null
+
+# Evaluation Configuration
+evaluation:
+  metrics: ["dice", "iou", "hd95", "asd", "volume_error"]
+  save_predictions: true
+  generate_plots: true
+
+  # Visualization settings
+  slice_indices: null  # Auto-select if null
+  colormap: "custom"
+
+# Inference Configuration
+inference:
+  batch_size: 1
+  use_tta: false  # Test time augmentation
+  save_format: "nifti"  # nifti, numpy, or both
+
+  # Post-processing
+  remove_small_objects: true
+  min_object_size: 100
+
+# Hardware Configuration
+hardware:
+  device: "cuda"  # cuda or cpu
+  mixed_precision: true
+  gradient_accumulation_steps: 1
+  max_memory_usage: 0.9  # Fraction of GPU memory
+
+# Organ Labels
+organ_labels:
+  0: "background"
+  1: "spleen"
+  2: "right_kidney"
+  3: "left_kidney"
+  4: "gallbladder"
+  5: "esophagus"
+  6: "liver"
+  7: "stomach"
+  8: "aorta"
+  9: "IVC"
+  10: "portal_vein"
+  11: "pancreas"
+  12: "right_adrenal"
+  13: "left_adrenal"
+  14: "duodenum"
+  15: "bladder"
