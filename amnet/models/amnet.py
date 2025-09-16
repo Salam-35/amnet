@@ -48,6 +48,15 @@ class AMNet(nn.Module):
             for s in config.scales
         ])
 
+        # Projection layer to map encoder output to desired feature dimensions
+        # ResNet3D layer4 outputs 512 channels by default
+        encoder_output_channels = 512  # Fixed for ResNet3D architecture
+        self.spatial_projection_3d = nn.Conv3d(
+            encoder_output_channels,
+            config.feature_dim_3d,
+            kernel_size=1
+        ) if encoder_output_channels != config.feature_dim_3d else nn.Identity()
+
         # Anatomical Constraint Module
         self.constraint_module = AnatomicalConstraintModule(
             num_classes=config.num_classes,
@@ -63,7 +72,9 @@ class AMNet(nn.Module):
         )
 
         # Fusion decoder - adaptive channels based on fusion dim
-        if config.fusion_dim <= 32:
+        if config.fusion_dim <= 16:
+            decoder_channels = [32, 16, 8, 4]  # Micro
+        elif config.fusion_dim <= 32:
             decoder_channels = [64, 32, 16, 8]  # Ultra-lite
         elif config.fusion_dim <= 64:
             decoder_channels = [128, 64, 32, 16]  # Lite
@@ -149,17 +160,20 @@ class AMNet(nn.Module):
         spatial_features_3d = features_3d_dict['spatial_features']
         global_features_3d = features_3d_dict['global_features']
 
-        # Multi-scale feature extraction using spatial features
+        # Project spatial features to desired dimensions
+        projected_spatial = self.spatial_projection_3d(spatial_features_3d)
+
+        # Multi-scale feature extraction using projected spatial features
         multiscale_features = {}
         for i, scale in enumerate(self.config.scales):
             if scale == 1:
-                multiscale_features[f'scale_{scale}'] = self.multiscale_pooling[i](spatial_features_3d)
+                multiscale_features[f'scale_{scale}'] = self.multiscale_pooling[i](projected_spatial)
             else:
-                multiscale_features[f'scale_{scale}'] = self.multiscale_pooling[i](spatial_features_3d)
+                multiscale_features[f'scale_{scale}'] = self.multiscale_pooling[i](projected_spatial)
 
         return {
             'base': global_features_3d,
-            'spatial': spatial_features_3d,
+            'spatial': projected_spatial,
             'multiscale': multiscale_features
         }
 
