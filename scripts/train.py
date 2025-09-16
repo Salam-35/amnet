@@ -109,7 +109,7 @@ def create_data_loaders(config, debug=False):
 
     # Get transforms
     train_transforms = MedicalTransforms.get_training_transforms(config)
-    val_transforms = MedicalTransforms.get_validation_transforms()
+    val_transforms = MedicalTransforms.get_validation_transforms(config)
 
     # Create datasets
     train_dataset = AMOSDataset(
@@ -208,12 +208,12 @@ def main():
         # Ultra-minimal model for 24GB GPU with <20M parameters
         config.model.input_size = (64, 64, 64)  # Minimum viable input for ConvNeXt
         config.model.encoder_2d_name = "convnext_v2_tiny"
-        config.model.feature_dim_2d = 16  # Extremely small
+        config.model.feature_dim_2d = 64  # Small but usable
         config.model.encoder_2d_depths = [1, 1, 1, 1]  # Minimal depths
         config.model.encoder_3d_name = "resnet3d_18"
-        config.model.feature_dim_3d = 32  # Extremely small
+        config.model.feature_dim_3d = 128  # Small but usable
         config.model.encoder_3d_layers = [1, 1, 1, 1]  # Minimal layers
-        config.model.fusion_dim = 8  # Extremely tiny fusion
+        config.model.fusion_dim = 32  # Small but usable
         config.model.scales = [1]  # Single scale only
         config.model.attention_heads = 1  # Single attention head
         config.training.batch_size = 8  # Can use more with tiny model

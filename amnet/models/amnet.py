@@ -72,9 +72,7 @@ class AMNet(nn.Module):
         )
 
         # Fusion decoder - adaptive channels based on fusion dim
-        if config.fusion_dim <= 8:
-            decoder_channels = [16, 8, 4, 2]  # Nano
-        elif config.fusion_dim <= 16:
+        if config.fusion_dim <= 16:
             decoder_channels = [32, 16, 8, 4]  # Micro
         elif config.fusion_dim <= 32:
             decoder_channels = [64, 32, 16, 8]  # Ultra-lite

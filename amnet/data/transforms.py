@@ -106,16 +106,19 @@ class MedicalTransforms:
         return transform_fn
 
     @staticmethod
-    def get_validation_transforms() -> Callable:
+    def get_validation_transforms(config=None) -> Callable:
         """Get validation transforms (no augmentation)"""
+
+        # Get config once at function creation time, not during each call
+        if config is None:
+            from scripts.config import Config
+            config = Config()
 
         def transform_fn(sample: Dict[str, torch.Tensor]) -> Dict[str, torch.Tensor]:
             image = sample['image'].numpy()
             mask = sample['mask'].numpy()
 
             # Only resize to target dimensions
-            from scripts.config import Config
-            config = Config()
 
             image = resize_volume(image, config.input_size)
             mask = resize_volume(mask, config.input_size, order=0)
