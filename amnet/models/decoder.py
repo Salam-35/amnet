@@ -184,10 +184,12 @@ class SEBlock3D(nn.Module):
         super().__init__()
 
         self.squeeze = nn.AdaptiveAvgPool3d(1)
+        # Ensure at least 1 channel after reduction
+        reduced_channels = max(1, channels // reduction)
         self.excitation = nn.Sequential(
-            nn.Conv3d(channels, channels // reduction, 1, bias=False),
+            nn.Conv3d(channels, reduced_channels, 1, bias=False),
             nn.ReLU(inplace=True),
-            nn.Conv3d(channels // reduction, channels, 1, bias=False),
+            nn.Conv3d(reduced_channels, channels, 1, bias=False),
             nn.Sigmoid()
         )
 
