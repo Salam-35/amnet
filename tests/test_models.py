@@ -9,11 +9,10 @@ import torch.nn as nn
 from amnet.models.amnet import AMNet
 from amnet.models.encoders import ConvNeXtV2Encoder, ResNet3DEncoder
 from amnet.models.attention import SliceAttentionModule, CrossDimensionalAttention
-from amnet.models.decoder import MultiScaleFusionDecoder
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from config import Config
+from scripts.config import Config
 
 
 class TestAMNetModel:

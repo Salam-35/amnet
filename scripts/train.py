@@ -16,7 +16,7 @@ from torch.utils.data import DataLoader
 # Add project root to path
 sys.path.append(str(Path(__file__).parent.parent))
 
-from amnet.config import Config
+from config import Config
 from amnet.data.dataset import AMOSDataset
 from amnet.data.transforms import MedicalTransforms
 from amnet.models.amnet import AMNet
@@ -109,7 +109,6 @@ def create_data_loaders(config, debug=False):
     train_dataset = AMOSDataset(
         data_root=config.data_root,
         split="train",
-        config=config,
         transforms=train_transforms,
         cache_data=not debug  # Disable caching in debug mode
     )
@@ -117,7 +116,6 @@ def create_data_loaders(config, debug=False):
     val_dataset = AMOSDataset(
         data_root=config.data_root,
         split="val",
-        config=config,
         transforms=val_transforms,
         cache_data=not debug
     )

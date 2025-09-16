@@ -59,13 +59,13 @@ class MedicalTransforms:
 
             # Random rotation
             if random.random() < 0.6:
-                angle = random.uniform(*config.rotation_range)
+                angle = random.uniform(*config.augmentation.rotation_range)
                 image_np = ndimage.rotate(image_np, angle, axes=(1, 2), reshape=False, order=1)
                 mask_np = ndimage.rotate(mask_np, angle, axes=(1, 2), reshape=False, order=0)
 
             # Random scaling
             if random.random() < 0.4:
-                scale = random.uniform(*config.scaling_range)
+                scale = random.uniform(*config.augmentation.scaling_range)
                 zoom_factors = [1.0, scale, scale]  # Only scale H, W
                 image_np = ndimage.zoom(image_np, zoom_factors, order=1)
                 mask_np = ndimage.zoom(mask_np, zoom_factors, order=0)
@@ -78,7 +78,7 @@ class MedicalTransforms:
 
             # Gaussian noise
             if random.random() < 0.3:
-                noise = np.random.normal(0, config.noise_std, image_np.shape)
+                noise = np.random.normal(0, config.augmentation.noise_std, image_np.shape)
                 image_np = image_np + noise.astype(np.float32)
                 image_np = np.clip(image_np, 0, 1)
 

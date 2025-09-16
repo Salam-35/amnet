@@ -15,7 +15,7 @@ class ModelConfig:
     """Model architecture configuration"""
     name: str = "AMNet"
     num_classes: int = 16
-    input_size: Tuple[int, int, int] = (128, 192, 192)  # D, H, W
+    input_size: Tuple[int, int, int] = (128, 128, 128)  # D, H, W
 
     # 2D Branch
     encoder_2d_name: str = "convnext_v2_base"
@@ -42,7 +42,7 @@ class TrainingConfig:
     batch_size: int = 4
     learning_rate: float = 0.0001
     weight_decay: float = 0.00001
-    max_epochs: int = 1000
+    max_epochs: int = 100
     early_stopping: int = 50
 
     # Optimizer
@@ -74,10 +74,10 @@ class LossConfig:
 @dataclass
 class DataConfig:
     """Data configuration"""
-    root_dir: str = "/data/AMOS22"
+    root_dir: str = "/media/salam/projects/amos22/data/amos/"
     num_workers: int = 8
-    pin_memory: bool = True
-    cache_data: bool = True
+    pin_memory: bool = False
+    cache_data: bool = False
 
     # Splits
     train_ratio: float = 0.7
@@ -117,11 +117,11 @@ class AugmentationConfig:
 @dataclass
 class PathsConfig:
     """Paths configuration"""
-    output_dir: str = "./outputs"
-    checkpoint_dir: str = "./outputs/checkpoints"
-    log_dir: str = "./outputs/logs"
-    predictions_dir: str = "./outputs/predictions"
-    visualizations_dir: str = "./outputs/visualizations"
+    output_dir: str = "../outputs"
+    checkpoint_dir: str = "../outputs/checkpoints"
+    log_dir: str = "../outputs/logs"
+    predictions_dir: str = "../outputs/predictions"
+    visualizations_dir: str = "../outputs/visualizations"
 
 
 @dataclass

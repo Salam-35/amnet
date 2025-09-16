@@ -11,7 +11,7 @@ from torch.optim.lr_scheduler import CosineAnnealingLR
 import numpy as np
 import time
 from pathlib import Path
-from typing import Dict, Optional, Tuple
+from typing import Dict, Optional, Tuple, List
 import logging
 from tqdm import tqdm
 from rich.console import Console
@@ -59,14 +59,14 @@ class AMNetTrainer:
         # Optimizer and scheduler
         self.optimizer = AdamW(
             self.model.parameters(),
-            lr=config.learning_rate,
-            weight_decay=config.weight_decay,
-            betas=(0.9, 0.999)
+            lr=config.training.learning_rate,
+            weight_decay=config.training.weight_decay,
+            betas=config.training.betas
         )
 
         self.scheduler = CosineAnnealingLR(
             self.optimizer,
-            T_max=config.max_epochs,
+            T_max=config.training.max_epochs,
             eta_min=1e-7
         )
 
@@ -116,7 +116,7 @@ class AMNetTrainer:
         ) as progress:
 
             train_task = progress.add_task(
-                f"[green]Epoch {self.current_epoch + 1}/{self.config.max_epochs}",
+                f"[green]Epoch {self.current_epoch + 1}/{self.config.training.max_epochs}",
                 total=num_batches
             )
 
@@ -345,7 +345,7 @@ class AMNetTrainer:
             'val_asd': []
         }
 
-        for epoch in range(self.config.max_epochs):
+        for epoch in range(self.config.training.max_epochs):
             self.current_epoch = epoch
             epoch_start_time = time.time()
 

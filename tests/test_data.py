@@ -18,7 +18,7 @@ sys.path.append(str(Path(__file__).parent.parent))
 from amnet.data.dataset import AMOSDataset
 from amnet.data.transforms import MedicalTransforms
 from amnet.data.preprocessing import CTPreprocessor, preprocess_ct_volume
-from config import Config
+from scripts.config import Config
 
 
 class TestAMOSDataset:

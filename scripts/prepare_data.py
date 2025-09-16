@@ -83,7 +83,7 @@ def parse_arguments():
         "--target_size",
         nargs=3,
         type=int,
-        default=[128, 192, 192],
+        default=[128, 128, 128],
         help="Target volume size (D H W)"
     )
 
@@ -314,7 +314,7 @@ def preprocess_dataset(data_root: Path,
             logger.error(f"Error preprocessing {case_id}: {e}")
 
     # Save preprocessing log
-    log_file = output_dir / "preprocessing_log.json"
+    log_file = "/home/salam/Projects/amnet/outputs/logs" + "/preprocessing_log.json"
     save_json(preprocessing_log, log_file)
 
     logger.info(f"Preprocessing completed: {len(preprocessing_log)} cases processed")
@@ -347,7 +347,7 @@ def main():
 
     # Save integrity report
     output_dir.mkdir(parents=True, exist_ok=True)
-    integrity_file = output_dir / "data_integrity_report.json"
+    integrity_file = "/home/salam/Projects/amnet/outputs/logs" + "/data_integrity_report.json"
     save_json(integrity_results, integrity_file)
 
     logger.info(f"Data verification completed:")

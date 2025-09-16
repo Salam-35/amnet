@@ -195,8 +195,25 @@ def save_json(data: Dict, filepath: Union[str, Path], indent: int = 2) -> None:
     filepath = Path(filepath)
     filepath.parent.mkdir(parents=True, exist_ok=True)
 
+    # Convert numpy types to native Python types for JSON serialization
+    def convert_numpy_types(obj):
+        if isinstance(obj, np.integer):
+            return int(obj)
+        elif isinstance(obj, np.floating):
+            return float(obj)
+        elif isinstance(obj, np.ndarray):
+            return obj.tolist()
+        elif isinstance(obj, dict):
+            return {key: convert_numpy_types(value) for key, value in obj.items()}
+        elif isinstance(obj, list):
+            return [convert_numpy_types(item) for item in obj]
+        else:
+            return obj
+
+    converted_data = convert_numpy_types(data)
+
     with open(filepath, 'w') as f:
-        json.dump(data, f, indent=indent, ensure_ascii=False)
+        json.dump(converted_data, f, indent=indent, ensure_ascii=False)
 
     logger.debug(f"JSON saved to {filepath}")
 
@@ -604,7 +621,7 @@ def verify_data_integrity(data_root: Union[str, Path]) -> Dict[str, Any]:
             'invalid_cases': len(results['invalid_cases']),
             'common_shape': max(set(map(tuple, shapes)), key=shapes.count) if shapes else None,
             'shape_variations': len(set(map(tuple, shapes))) if shapes else 0,
-            'average_spacing': np.mean(spacings, axis=0).tolist() if spacings else None
+            'average_spacing': [float(x) for x in np.mean(spacings, axis=0)] if spacings else None
         }
 
     logger.info(f"Data verification complete: {results['statistics']}")

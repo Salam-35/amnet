@@ -32,7 +32,7 @@ training:
   batch_size: 4
   learning_rate: 0.0001
   weight_decay: 0.00001
-  max_epochs: 1000
+  max_epochs: 100
   early_stopping: 50
 
   # Optimizer
@@ -56,10 +56,10 @@ loss:
 
 # Data Configuration
 data:
-  root_dir: "/data/AMOS22"
-  num_workers: 8
+  root_dir: "/media/salam/projects/amos22/data/amos/"
+  num_workers: 4
   pin_memory: true
-  cache_data: true
+  cache_data: false
 
   # Data splits
   train_ratio: 0.7
