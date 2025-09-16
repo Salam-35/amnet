@@ -114,7 +114,7 @@ class MedicalTransforms:
             mask = sample['mask'].numpy()
 
             # Only resize to target dimensions
-            from amnet.config import Config
+            from scripts.config import Config
             config = Config()
 
             image = resize_volume(image, config.input_size)

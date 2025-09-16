@@ -15,7 +15,7 @@ from typing import List, Tuple
 # Add project root to path
 sys.path.append(str(Path(__file__).parent.parent))
 
-from amnet.config import Config
+from scripts.config import Config
 from amnet.models.amnet import AMNet
 from amnet.data.transforms import MedicalTransforms
 from amnet.utils.logging import setup_logging

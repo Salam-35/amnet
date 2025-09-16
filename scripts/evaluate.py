@@ -14,7 +14,7 @@ from torch.utils.data import DataLoader
 # Add project root to path
 sys.path.append(str(Path(__file__).parent.parent))
 
-from amnet.config import Config
+from scripts.config import Config
 from amnet.data.dataset import AMOSDataset
 from amnet.data.transforms import MedicalTransforms
 from amnet.models.amnet import AMNet
