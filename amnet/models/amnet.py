@@ -51,10 +51,10 @@ class AMNet(nn.Module):
         # Projection layer to map encoder output to desired feature dimensions
         # ResNet3D layer4 outputs 512 channels by default
         encoder_output_channels = 512  # Fixed for ResNet3D architecture
-        self.spatial_projection_3d = nn.Conv3d(
-            encoder_output_channels,
-            config.feature_dim_3d,
-            kernel_size=1
+        self.spatial_projection_3d = nn.Sequential(
+            nn.Conv3d(encoder_output_channels, config.feature_dim_3d, kernel_size=1),
+            nn.BatchNorm3d(config.feature_dim_3d),
+            nn.ReLU(inplace=True)
         ) if encoder_output_channels != config.feature_dim_3d else nn.Identity()
 
         # Anatomical Constraint Module
@@ -72,7 +72,9 @@ class AMNet(nn.Module):
         )
 
         # Fusion decoder - adaptive channels based on fusion dim
-        if config.fusion_dim <= 16:
+        if config.fusion_dim <= 8:
+            decoder_channels = [16, 8, 4, 2]  # Nano
+        elif config.fusion_dim <= 16:
             decoder_channels = [32, 16, 8, 4]  # Micro
         elif config.fusion_dim <= 32:
             decoder_channels = [64, 32, 16, 8]  # Ultra-lite

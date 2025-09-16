@@ -206,14 +206,14 @@ def main():
     if args.lite:
         logger.info("Using AMNet-Micro configuration")
         # Ultra-minimal model for 24GB GPU with <20M parameters
-        config.model.input_size = (24, 32, 32)  # Tiny input
+        config.model.input_size = (64, 64, 64)  # Minimum viable input for ConvNeXt
         config.model.encoder_2d_name = "convnext_v2_tiny"
-        config.model.feature_dim_2d = 32  # Very small
+        config.model.feature_dim_2d = 16  # Extremely small
         config.model.encoder_2d_depths = [1, 1, 1, 1]  # Minimal depths
         config.model.encoder_3d_name = "resnet3d_18"
-        config.model.feature_dim_3d = 64  # Very small
+        config.model.feature_dim_3d = 32  # Extremely small
         config.model.encoder_3d_layers = [1, 1, 1, 1]  # Minimal layers
-        config.model.fusion_dim = 16  # Tiny fusion
+        config.model.fusion_dim = 8  # Extremely tiny fusion
         config.model.scales = [1]  # Single scale only
         config.model.attention_heads = 1  # Single attention head
         config.training.batch_size = 8  # Can use more with tiny model
