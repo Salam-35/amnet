@@ -16,13 +16,15 @@ class MultiScaleFusionDecoder(nn.Module):
                  fusion_dim: int,
                  num_classes: int,
                  scales: List[int] = [1, 2, 4, 8],
-                 decoder_channels: List[int] = [512, 256, 128, 64]):
+                 decoder_channels: List[int] = [512, 256, 128, 64],
+                 feature_dim_3d: int = 2048):
         super().__init__()
 
         self.fusion_dim = fusion_dim
         self.num_classes = num_classes
         self.scales = scales
         self.decoder_channels = decoder_channels
+        self.feature_dim_3d = feature_dim_3d
 
         # Learnable fusion weights
         self.fusion_weights = nn.Parameter(torch.ones(4))  # γ1, γ2, γ3, γ4
@@ -63,7 +65,7 @@ class MultiScaleFusionDecoder(nn.Module):
         
         self.multiscale_processors = nn.ModuleList([
             nn.Sequential(
-                nn.Conv3d(fusion_dim, decoder_channels[0] // len(scales),
+                nn.Conv3d(feature_dim_3d, decoder_channels[0] // len(scales),
                           kernel_size=3, padding=1),
                 nn.BatchNorm3d(decoder_channels[0] // len(scales)),
                 nn.ReLU(inplace=True)

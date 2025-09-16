@@ -73,7 +73,8 @@ class AMNet(nn.Module):
             fusion_dim=config.fusion_dim,
             num_classes=config.num_classes,
             scales=config.scales,
-            decoder_channels=decoder_channels
+            decoder_channels=decoder_channels,
+            feature_dim_3d=config.feature_dim_3d
         )
 
         # Initialize weights
