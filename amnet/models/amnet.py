@@ -62,11 +62,18 @@ class AMNet(nn.Module):
             fusion_dim=config.fusion_dim
         )
 
-        # Fusion decoder
+        # Fusion decoder - adaptive channels based on fusion dim
+        if config.fusion_dim <= 32:
+            decoder_channels = [64, 32, 16, 8]  # Ultra-lite
+        elif config.fusion_dim <= 64:
+            decoder_channels = [128, 64, 32, 16]  # Lite
+        else:
+            decoder_channels = [512, 256, 128, 64]  # Full
         self.fusion_decoder = MultiScaleFusionDecoder(
             fusion_dim=config.fusion_dim,
             num_classes=config.num_classes,
-            scales=config.scales
+            scales=config.scales,
+            decoder_channels=decoder_channels
         )
 
         # Initialize weights

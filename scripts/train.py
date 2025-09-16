@@ -205,17 +205,17 @@ def main():
     # Apply lite model configuration
     if args.lite:
         logger.info("Using AMNet-Ultra-Lite configuration")
-        # Reduce model dimensions even more for 24GB GPU
-        config.model.input_size = (48, 64, 64)  # Even smaller input
+        # Reduce model dimensions drastically for 24GB GPU and <50M parameters
+        config.model.input_size = (32, 48, 48)  # Very small input
         config.model.encoder_2d_name = "convnext_v2_tiny"
-        config.model.feature_dim_2d = 128  # Reduced from 256
-        config.model.encoder_2d_depths = [1, 1, 3, 1]  # Much smaller depths
+        config.model.feature_dim_2d = 64  # Much smaller
+        config.model.encoder_2d_depths = [1, 1, 2, 1]  # Minimal depths
         config.model.encoder_3d_name = "resnet3d_18"
-        config.model.feature_dim_3d = 256  # Reduced from 512
+        config.model.feature_dim_3d = 128  # Much smaller
         config.model.encoder_3d_layers = [1, 1, 1, 1]  # Minimal layers
-        config.model.fusion_dim = 64  # Reduced from 128
-        config.model.scales = [1, 2]  # Only 2 scales instead of 3
-        config.model.attention_heads = 2  # Reduced from 4
+        config.model.fusion_dim = 32  # Very small fusion
+        config.model.scales = [1, 2]  # Only 2 scales
+        config.model.attention_heads = 2  # Minimal attention
         config.training.batch_size = 4  # Conservative batch size
         config.training.learning_rate = 0.0002
         logger.info(f"AMNet-Ultra-Lite: input_size={config.model.input_size}, batch_size={config.training.batch_size}")
