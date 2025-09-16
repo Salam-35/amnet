@@ -81,8 +81,9 @@ class FocalLoss(nn.Module):
             predictions = predictions[valid_mask]
             targets = targets[valid_mask]
 
-        # Compute cross entropy with class weights
-        ce_loss = F.cross_entropy(predictions, targets, weight=self.class_weights, reduction='none')
+        # Compute cross entropy with class weights (move to same device)
+        class_weights = self.class_weights.to(predictions.device) if self.class_weights is not None else None
+        ce_loss = F.cross_entropy(predictions, targets, weight=class_weights, reduction='none')
 
         # Compute focal weight
         pt = torch.exp(-ce_loss)
