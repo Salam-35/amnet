@@ -216,8 +216,8 @@ def main():
         config.model.fusion_dim = 32  # Small but usable
         config.model.scales = [1]  # Single scale only
         config.model.attention_heads = 1  # Single attention head
-        config.training.batch_size = 8  # Can use more with tiny model
-        config.training.learning_rate = 0.0002
+        config.training.batch_size = 4  # Reduce batch size for stability
+        config.training.learning_rate = 0.0001  # Lower learning rate
         logger.info(f"AMNet-Ultra-Lite: input_size={config.model.input_size}, batch_size={config.training.batch_size}")
 
         # Update derived properties after lite configuration

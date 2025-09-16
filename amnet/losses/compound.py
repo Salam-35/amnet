@@ -53,11 +53,16 @@ class DiceLoss(nn.Module):
 class FocalLoss(nn.Module):
     """Focal Loss for handling class imbalance"""
 
-    def __init__(self, alpha: float = 1.0, gamma: float = 2.0, ignore_index: int = -1):
+    def __init__(self, alpha: float = 1.0, gamma: float = 2.0, ignore_index: int = -1,
+                 class_weights: torch.Tensor = None):
         super().__init__()
         self.alpha = alpha
         self.gamma = gamma
         self.ignore_index = ignore_index
+        if class_weights is not None:
+            self.register_buffer('class_weights', class_weights)
+        else:
+            self.class_weights = None
 
     def forward(self, predictions: torch.Tensor, targets: torch.Tensor) -> torch.Tensor:
         """
@@ -76,8 +81,8 @@ class FocalLoss(nn.Module):
             predictions = predictions[valid_mask]
             targets = targets[valid_mask]
 
-        # Compute cross entropy
-        ce_loss = F.cross_entropy(predictions, targets, reduction='none')
+        # Compute cross entropy with class weights
+        ce_loss = F.cross_entropy(predictions, targets, weight=self.class_weights, reduction='none')
 
         # Compute focal weight
         pt = torch.exp(-ce_loss)
@@ -151,7 +156,13 @@ class CompoundLoss(nn.Module):
         self.delta = delta
 
         self.dice_loss = DiceLoss()
-        self.focal_loss = FocalLoss()
+        # Create class weights for medical data (heavily weight foreground classes)
+        class_weights = torch.tensor([
+            0.1,  # background (low weight)
+            1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,  # organs (normal weight)
+            1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0  # more organs
+        ], dtype=torch.float32)
+        self.focal_loss = FocalLoss(class_weights=class_weights)
         self.boundary_loss = BoundaryLoss()
 
     def forward(self,

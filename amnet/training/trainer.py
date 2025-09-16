@@ -215,6 +215,12 @@ class AMNetTrainer:
         all_predictions = torch.cat(all_predictions, dim=0)
         all_targets = torch.cat(all_targets, dim=0)
 
+        # Debug: Check prediction distribution
+        unique_preds, pred_counts = torch.unique(all_predictions, return_counts=True)
+        unique_targets, target_counts = torch.unique(all_targets, return_counts=True)
+        self.logger.info(f"Predictions - Classes: {unique_preds.tolist()}, Counts: {pred_counts.tolist()}")
+        self.logger.info(f"Targets - Classes: {unique_targets.tolist()}, Counts: {target_counts.tolist()}")
+
         # Convert to proper format for metrics
         predictions_np = all_predictions.numpy()
         targets_np = all_targets.numpy()
