@@ -95,6 +95,12 @@ def parse_arguments():
         help="Override config batch size"
     )
 
+    parser.add_argument(
+        "--lite",
+        action="store_true",
+        help="Use AMNet-Lite configuration (smaller model)"
+    )
+
     return parser.parse_args()
 
 
@@ -107,14 +113,14 @@ def create_data_loaders(config, debug=False):
 
     # Create datasets
     train_dataset = AMOSDataset(
-        data_root=config.data_root,
+        data_root=config.data.root_dir,
         split="train",
         transforms=train_transforms,
         cache_data=not debug  # Disable caching in debug mode
     )
 
     val_dataset = AMOSDataset(
-        data_root=config.data_root,
+        data_root=config.data.root_dir,
         split="val",
         transforms=val_transforms,
         cache_data=not debug
@@ -129,21 +135,21 @@ def create_data_loaders(config, debug=False):
     # Create data loaders
     train_loader = DataLoader(
         train_dataset,
-        batch_size=config.batch_size,
+        batch_size=config.training.batch_size,
         shuffle=True,
-        num_workers=config.num_workers,
-        pin_memory=config.pin_memory,
+        num_workers=config.data.num_workers,
+        pin_memory=config.data.pin_memory,
         drop_last=True,
-        persistent_workers=True if config.num_workers > 0 else False
+        persistent_workers=True if config.data.num_workers > 0 else False
     )
 
     val_loader = DataLoader(
         val_dataset,
         batch_size=1,  # Use batch size 1 for validation
         shuffle=False,
-        num_workers=config.num_workers // 2,
-        pin_memory=config.pin_memory,
-        persistent_workers=True if config.num_workers > 0 else False
+        num_workers=max(0, config.data.num_workers // 2),
+        pin_memory=config.data.pin_memory,
+        persistent_workers=True if config.data.num_workers > 0 else False
     )
 
     logger.info(f"Created data loaders:")
@@ -194,27 +200,48 @@ def main():
     logger.info("=" * 80)
 
     # Load configuration
-    config = Config()
+    config = Config(config_path=args.config if args.config else None)
+
+    # Apply lite model configuration
+    if args.lite:
+        logger.info("Using AMNet-Ultra-Lite configuration")
+        # Reduce model dimensions even more for 24GB GPU
+        config.model.input_size = (48, 64, 64)  # Even smaller input
+        config.model.encoder_2d_name = "convnext_v2_tiny"
+        config.model.feature_dim_2d = 128  # Reduced from 256
+        config.model.encoder_2d_depths = [1, 1, 3, 1]  # Much smaller depths
+        config.model.encoder_3d_name = "resnet3d_18"
+        config.model.feature_dim_3d = 256  # Reduced from 512
+        config.model.encoder_3d_layers = [1, 1, 1, 1]  # Minimal layers
+        config.model.fusion_dim = 64  # Reduced from 128
+        config.model.scales = [1, 2]  # Only 2 scales instead of 3
+        config.model.attention_heads = 2  # Reduced from 4
+        config.training.batch_size = 4  # Conservative batch size
+        config.training.learning_rate = 0.0002
+        logger.info(f"AMNet-Ultra-Lite: input_size={config.model.input_size}, batch_size={config.training.batch_size}")
+
+        # Update derived properties after lite configuration
+        config._set_derived_properties()
 
     # Override config with arguments
     if args.data_root:
-        config.data_root = args.data_root
+        config.data.root_dir = args.data_root
     if args.output_dir:
-        config.output_dir = args.output_dir
+        config.paths.output_dir = args.output_dir
     if args.batch_size:
-        config.batch_size = args.batch_size
-    if args.num_workers:
-        config.num_workers = args.num_workers
+        config.training.batch_size = args.batch_size
+    if args.num_workers is not None:  # Check for None to allow 0
+        config.data.num_workers = args.num_workers
 
     # Debug mode adjustments
     if args.debug:
-        config.batch_size = min(config.batch_size, 2)
-        config.max_epochs = 10
-        config.log_interval = 1
+        config.training.batch_size = min(config.training.batch_size, 2)
+        config.training.max_epochs = 10
+        config.logging.log_interval = 1
         logger.info("Debug mode enabled - reduced batch size and epochs")
 
     # Create output directories
-    output_dir = Path(config.output_dir)
+    output_dir = Path(config.paths.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     (output_dir / "checkpoints").mkdir(exist_ok=True)
     (output_dir / "logs").mkdir(exist_ok=True)

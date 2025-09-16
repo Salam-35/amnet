@@ -13,7 +13,7 @@ from typing import Tuple, Dict, Optional
 class AnatomicalConstraintModule(nn.Module):
     """Enforces anatomical constraints between organs"""
 
-    def __init__(self, num_classes: int = 16):
+    def __init__(self, num_classes: int = 16, feature_dim_2d: int = 1024, feature_dim_3d: int = 2048):
         super().__init__()
         self.num_classes = num_classes
 
@@ -27,8 +27,8 @@ class AnatomicalConstraintModule(nn.Module):
         self._init_anatomical_priors()
 
         # Feature projection layers to map high-dim features to constraint space
-        self.feature_proj_2d = nn.Linear(1024, 32)  # Assuming 1024 from ConvNeXt
-        self.feature_proj_3d = nn.Linear(2048, 32)  # Assuming 2048 from ResNet3D
+        self.feature_proj_2d = nn.Linear(feature_dim_2d, 32)
+        self.feature_proj_3d = nn.Linear(feature_dim_3d, 32)
         
         # Constraint network for learning complex relationships
         self.constraint_net = nn.Sequential(

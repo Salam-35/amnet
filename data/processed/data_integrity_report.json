@@ -1,0 +1,12 @@
+{
+  "valid_cases": [
+    {
+      "case_id": "amos_0083",
+      "issues": [],
+      "image_shape": [
+        512,
+        512,
+        100
+      ],
+      "image_spacing": [
+        

@@ -1,0 +1,164 @@
+alpha_dice: 1.0
+augmentation: !!python/object:config.AugmentationConfig
+  blur_probability: 0.3
+  blur_sigma_range: !!python/tuple
+  - 0.5
+  - 2.0
+  brightness_range: !!python/tuple
+  - -0.1
+  - 0.1
+  contrast_range: !!python/tuple
+  - 0.8
+  - 1.2
+  elastic_alpha: 1.0
+  elastic_probability: 0.3
+  elastic_sigma: 50.0
+  flip_probability: 0.5
+  noise_std: 0.1
+  probability: 0.8
+  rotation_range: !!python/tuple
+  - -10.0
+  - 10.0
+  scaling_range: !!python/tuple
+  - 0.9
+  - 1.1
+batch_size: 2
+beta_focal: 0.5
+cache_data: false
+checkpoint_dir: ../outputs/checkpoints
+data: !!python/object:config.DataConfig
+  cache_data: false
+  num_workers: 8
+  pin_memory: false
+  root_dir: /media/salam/projects/amos22/data/amos/
+  target_spacing: !!python/tuple
+  - 1.5
+  - 1.0
+  - 1.0
+  test_ratio: 0.15
+  train_ratio: 0.7
+  val_ratio: 0.15
+  window_level: 40.0
+  window_width: 400.0
+data_root: /media/salam/projects/amos22/data/amos/
+delta_constraint: 0.2
+device: cuda
+early_stopping: 50
+evaluation: !!python/object:config.EvaluationConfig
+  colormap: custom
+  generate_plots: true
+  metrics:
+  - dice
+  - iou
+  - hd95
+  - asd
+  - volume_error
+  save_predictions: true
+  slice_indices: null
+feature_dim_2d: 1024
+feature_dim_3d: 2048
+fusion_dim: 512
+gamma_boundary: 0.3
+hardware: !!python/object:config.HardwareConfig
+  device: cuda
+  gradient_accumulation_steps: 1
+  max_memory_usage: 0.9
+  mixed_precision: true
+inference: !!python/object:config.InferenceConfig
+  batch_size: 1
+  min_object_size: 100
+  remove_small_objects: true
+  save_format: nifti
+  use_tta: false
+input_size: &id001 !!python/tuple
+- 128
+- 128
+- 128
+learning_rate: 0.0001
+log_dir: ../outputs/logs
+log_interval: 1
+logging: !!python/object:config.LoggingConfig
+  level: INFO
+  log_interval: 10
+  save_checkpoint_interval: 100
+  use_wandb: true
+  val_interval: 50
+  visualize_predictions: true
+  wandb_entity: null
+  wandb_project: AMNet-AbdominalSegmentation
+loss: !!python/object:config.LossConfig
+  alpha_dice: 1.0
+  beta_focal: 0.5
+  delta_constraint: 0.2
+  focal_alpha: 1.0
+  focal_gamma: 2.0
+  gamma_boundary: 0.3
+max_epochs: 10
+model: !!python/object:config.ModelConfig
+  attention_dropout: 0.1
+  attention_heads: 8
+  encoder_2d_depths:
+  - 3
+  - 3
+  - 27
+  - 3
+  encoder_2d_name: convnext_v2_base
+  encoder_3d_layers:
+  - 3
+  - 4
+  - 6
+  - 3
+  encoder_3d_name: resnet3d_50
+  feature_dim_2d: 1024
+  feature_dim_3d: 2048
+  fusion_dim: 512
+  input_size: *id001
+  name: AMNet
+  num_classes: 16
+  scales: &id002
+  - 1
+  - 2
+  - 4
+  - 8
+num_classes: 16
+num_workers: 8
+organ_labels:
+  0: background
+  1: spleen
+  2: right_kidney
+  3: left_kidney
+  4: gallbladder
+  5: esophagus
+  6: liver
+  7: stomach
+  8: aorta
+  9: IVC
+  10: portal_vein
+  11: pancreas
+  12: right_adrenal
+  13: left_adrenal
+  14: duodenum
+  15: bladder
+output_dir: ./outputs
+paths: !!python/object:config.PathsConfig
+  checkpoint_dir: ../outputs/checkpoints
+  log_dir: ../outputs/logs
+  output_dir: ../outputs
+  predictions_dir: ../outputs/predictions
+  visualizations_dir: ../outputs/visualizations
+pin_memory: false
+scales: *id002
+training: !!python/object:config.TrainingConfig
+  batch_size: 4
+  betas: !!python/tuple
+  - 0.9
+  - 0.999
+  early_stopping: 50
+  eta_min: 1.0e-07
+  gradient_accumulation_steps: 1
+  gradient_clip_norm: 1.0
+  learning_rate: 0.0001
+  max_epochs: 100
+  optimizer: AdamW
+  scheduler: CosineAnnealingLR
+  weight_decay: 1.0e-05

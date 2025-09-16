@@ -226,15 +226,50 @@ class Config:
         for section_name, section_data in config_dict.items():
             if hasattr(self, section_name) and isinstance(section_data, dict):
                 section_config = getattr(self, section_name)
-                for key, value in section_data.items():
-                    if hasattr(section_config, key):
-                        setattr(section_config, key, value)
-                    else:
-                        logger.warning(f"Unknown config key: {section_name}.{key}")
+
+                # Handle special nested structures for model config
+                if section_name == "model":
+                    self._update_model_config(section_config, section_data)
+                else:
+                    for key, value in section_data.items():
+                        if isinstance(key, str) and hasattr(section_config, key):
+                            setattr(section_config, key, value)
+                        else:
+                            logger.warning(f"Unknown config key: {section_name}.{key}")
             elif section_name == "organ_labels":
                 self.organ_labels = section_data
             else:
                 logger.warning(f"Unknown config section: {section_name}")
+
+    def _update_model_config(self, model_config, model_data: Dict[str, Any]):
+        """Update model configuration with special handling for nested structures"""
+        for key, value in model_data.items():
+            if key == "encoder_2d" and isinstance(value, dict):
+                # Map nested encoder_2d structure to flat attributes
+                if "name" in value:
+                    model_config.encoder_2d_name = value["name"]
+                if "feature_dim" in value:
+                    model_config.feature_dim_2d = value["feature_dim"]
+                if "depths" in value:
+                    model_config.encoder_2d_depths = value["depths"]
+            elif key == "encoder_3d" and isinstance(value, dict):
+                # Map nested encoder_3d structure to flat attributes
+                if "name" in value:
+                    model_config.encoder_3d_name = value["name"]
+                if "feature_dim" in value:
+                    model_config.feature_dim_3d = value["feature_dim"]
+                if "layers" in value:
+                    model_config.encoder_3d_layers = value["layers"]
+            elif key == "attention" and isinstance(value, dict):
+                # Map nested attention structure to flat attributes
+                if "heads" in value:
+                    model_config.attention_heads = value["heads"]
+                if "dropout" in value:
+                    model_config.attention_dropout = value["dropout"]
+            elif isinstance(key, str) and hasattr(model_config, key):
+                setattr(model_config, key, value)
+            else:
+                logger.warning(f"Unknown config key: model.{key}")
 
     def _apply_environment_overrides(self):
         """Apply environment variable overrides"""

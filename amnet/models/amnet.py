@@ -49,7 +49,11 @@ class AMNet(nn.Module):
         ])
 
         # Anatomical Constraint Module
-        self.constraint_module = AnatomicalConstraintModule(config.num_classes)
+        self.constraint_module = AnatomicalConstraintModule(
+            num_classes=config.num_classes,
+            feature_dim_2d=config.feature_dim_2d,
+            feature_dim_3d=config.feature_dim_3d
+        )
 
         # Cross-dimensional attention
         self.cross_attention = CrossDimensionalAttention(
